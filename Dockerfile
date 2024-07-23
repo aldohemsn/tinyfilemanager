@@ -21,6 +21,9 @@ RUN sed -i 's/Options Indexes FollowSymLinks/Options FollowSymLinks/' /etc/apach
 # Allow .htaccess overrides by setting AllowOverride to All
 RUN sed -i 's/AllowOverride None/AllowOverride All/' /etc/apache2/apache2.conf
 
+# Set index.php as the default file
+RUN echo "DirectoryIndex index.php index.html" >> /etc/apache2/apache2.conf
+
 # Copy your website files into the Apache document root
 COPY ./myfiles/filemanager/ /var/www/html/
 

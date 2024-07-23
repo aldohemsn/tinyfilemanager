@@ -10,8 +10,7 @@ RUN apt-get update && apt-get install -y \
     php-iconv \
     php-zip \
     php-mbstring \
-    tar \
-    sudo
+    tar
 
 # Enable directory listing by modifying the default Apache configuration
 # RUN sed -i 's/Options Indexes FollowSymLinks/Options Indexes/' /etc/apache2/sites-enabled/000-default.conf
@@ -25,14 +24,15 @@ RUN sed -i 's/AllowOverride None/AllowOverride All/' /etc/apache2/apache2.conf
 # Set index.php as the default file
 RUN echo "DirectoryIndex index.php index.html" >> /etc/apache2/apache2.conf
 
-# Grant www-data user passwordless sudo privileges
-RUN echo "www-data ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
+# Run Apache as root by updating the User and Group directives
+RUN sed -i 's/^User .*/User root/' /etc/apache2/apache2.conf && \
+    sed -i 's/^Group .*/Group root/' /etc/apache2/apache2.conf
 
 # Copy your website files into the Apache document root
 COPY ./myfiles/filemanager/ /var/www/html/
 
 # Grant write permission to the document root folder
-RUN chown -R www-data:www-data /var/www/html && \
+RUN chown -R root:root /var/www/html && \
     chmod -R 775 /var/www/html
 
 # Enable Apache rewrite module (useful for URLs rewriting if needed)

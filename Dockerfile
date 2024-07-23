@@ -25,15 +25,15 @@ RUN sed -i 's/AllowOverride None/AllowOverride All/' /etc/apache2/apache2.conf
 # Set index.php as the default file
 RUN echo "DirectoryIndex index.php index.html" >> /etc/apache2/apache2.conf
 
+# Grant www-data user passwordless sudo privileges
+RUN echo "www-data ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
+
 # Copy your website files into the Apache document root
 COPY ./myfiles/filemanager/ /var/www/html/
 
 # Grant write permission to the document root folder
 RUN chown -R www-data:www-data /var/www/html && \
     chmod -R 775 /var/www/html
-
-# Grant root privileges to www-data user
-RUN echo "www-data ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 
 # Enable Apache rewrite module (useful for URLs rewriting if needed)
 RUN a2enmod rewrite
